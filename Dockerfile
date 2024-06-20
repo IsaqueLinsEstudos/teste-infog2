@@ -1,32 +1,26 @@
+
 FROM python:3.9
 
-
+# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
+# Copia o arquivo de requisitos para o diretório /app/requirements
+COPY requirements.txt /app/requirements/requirements.txt
 
-ADD requirements /app/requirements/
-ADD requirements.txt /app/requirements.txt
-
-
+# Cria um ambiente virtual e instala as dependências
 RUN python -m venv /env \
-&& /env/bin/pip install --upgrade pip \
-&& /env/bin/pip install --no-cache-dir -r /app/requirements.txt
+    && /env/bin/pip install --upgrade pip \
+    && /env/bin/pip install --no-cache-dir -r /app/requirements/requirements.txt
 
-
-RUN apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg && \
-curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | apt-key add - && \
-echo "deb https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list && \
-apt-get update
-
-
-ADD . /app
-
-
+# Define as variáveis de ambiente
 ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
 
+# Copia o restante do código fonte para o diretório /app no contêiner
+COPY . /app
 
+# Exponha a porta 8000 (opcionalmente, você pode ajustar para a porta que sua aplicação está configurada para usar)
 EXPOSE 8000
 
-
-CMD uvicorn app.main:app
+# Comando padrão para iniciar a aplicação utilizando Uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
