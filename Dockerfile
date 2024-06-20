@@ -1,4 +1,3 @@
-
 FROM python:3.9
 
 # Define o diretório de trabalho dentro do contêiner
@@ -19,7 +18,7 @@ ENV PATH /env/bin:$PATH
 # Copia o restante do código fonte para o diretório /app no contêiner
 COPY . /app
 
-
+# Exponha a porta 8000 (opcionalmente, você pode ajustar para a porta que sua aplicação está configurada para usar)
 EXPOSE 8000
 
 # Comando padrão para iniciar a aplicação utilizando Uvicorn
