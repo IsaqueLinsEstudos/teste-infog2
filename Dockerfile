@@ -19,8 +19,8 @@ ENV PATH /env/bin:$PATH
 # Copia o restante do código fonte para o diretório /app no contêiner
 COPY . /app
 
-# Exponha a porta 8000 (opcionalmente, você pode ajustar para a porta que sua aplicação está configurada para usar)
+
 EXPOSE 8000
 
 # Comando padrão para iniciar a aplicação utilizando Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
