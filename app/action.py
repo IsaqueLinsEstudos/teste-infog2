@@ -264,3 +264,7 @@ def authenticate_user_and_create_token(db: Session, username: str, password: str
         raise HTTPException(status_code=400, detail="Invalid credentials")
     access_token = create_access_token_for_user(user.username)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app,host="0.0.0.0", port=5000)
