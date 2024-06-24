@@ -1,26 +1,28 @@
 FROM python:3.9
 
-# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copia o arquivo de requisitos para o diretório /app/requirements
-COPY requirements.txt /app/requirements/requirements.txt
+# Instala o cliente PostgreSQL e os cabeçalhos de desenvolvimento
+RUN apt-get update && \
+    apt-get install -y postgresql-client libpq-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Cria um ambiente virtual e instala as dependências
-RUN python -m venv /env \
-    && /env/bin/pip install --upgrade pip \
-    && /env/bin/pip install --no-cache-dir -r /app/requirements/requirements.txt
+COPY requirements.txt .
 
-# Define as variáveis de ambiente
-ENV VIRTUAL_ENV /env
-ENV PATH /env/bin:$PATH
+RUN python -m venv /opt/venv
 
-# Copia o restante do código fonte para o diretório /app no contêiner
-COPY . /app
+# Ativa o ambiente virtual
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Exponha a porta 8000 (opcionalmente, você pode ajustar para a porta que sua aplicação está configurada para usar)
-EXPOSE 8000
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Comando padrão para iniciar a aplicação utilizando Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "$PORT"]
+COPY . .
+
+ENV PORT=5000
+
+EXPOSE 5000
+
+CMD ["uvicorn", "app.main:app", "--port", "${PORT}"]
+
 
